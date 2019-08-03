@@ -2,18 +2,13 @@ package main
 
 import (
 	"github.com/himidori/golang-vk-api"
-	"github.com/joho/godotenv"
+
 	"log"
 	"net/url"
 	"os"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	serviceToken := os.Getenv("SERVICE_TOKEN")
 	group := os.Getenv("VK_GROUP")
 
@@ -23,7 +18,7 @@ func main() {
 	})
 
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
 	}
 
 	params := url.Values{}
@@ -34,8 +29,8 @@ func main() {
 			continue
 		}
 
-		log.Println(post.ID)
 		log.Println(post.Text)
+		log.Println(post.ID)
 
 		if post.Attachments != nil {
 			for _, attachment := range post.Attachments {
