@@ -85,6 +85,7 @@ func main() {
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonURL("Пост", vkPostUrl)),
 		)
+		msg.ParseMode = "Markdown"
 
 		_, err := bot.Send(msg)
 		if err != nil {
