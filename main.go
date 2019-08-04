@@ -1,14 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"github.com/go-redis/redis"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/himidori/golang-vk-api"
 	"log"
 	"net/url"
 	"os"
-	"strconv"
 )
 
 func main() {
@@ -16,13 +13,6 @@ func main() {
 	vkGroup := os.Getenv("VK_GROUP")
 	tgBotToken := os.Getenv("TG_BOT_TOKEN")
 	tgChannelId := os.Getenv("TG_CHANNEL_ID")
-	redisAddress := os.Getenv("REDIS_URL")
-	redisPassword := os.Getenv("REDIS_PASSWORD")
-
-	redisdb := redis.NewClient(&redis.Options{
-		Addr:     redisAddress,  // use default Addr
-		Password: redisPassword, // no password set
-	})
 
 	bot, err := tgbotapi.NewBotAPI(tgBotToken)
 	if err != nil {
@@ -41,19 +31,12 @@ func main() {
 	params := url.Values{}
 	wall, _ := client.WallGet(vkGroup, 10, params)
 
-	val, err := redisdb.Get("vk_last_post_id").Result()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("key", val)
-
-	vk_last_post_id, err := strconv.Atoi(val)
 	if err != nil {
 		panic(err)
 	}
 
 	for _, post := range wall.Posts {
-		if post.IsPinned == 1 || post.MarkedAsAd == 1 || post.ID <= vk_last_post_id {
+		if post.IsPinned == 1 || post.MarkedAsAd == 1 {
 			continue
 		}
 
@@ -81,15 +64,14 @@ func main() {
 				tgbotapi.NewInlineKeyboardButtonURL("Пост", vkPostUrl)),
 		)
 
-		bot.Send(msg)
-		updateDb(redisdb, post.ID)
-	}
-}
-
-func updateDb(client *redis.Client, i int) {
-	err := client.Set("vk_last_post_id", i, 0).Err()
-	if err != nil {
-		panic(err)
+		_, err := bot.Send(msg)
+		if err != nil {
+			panic(err)
+		}
+		err = os.Setenv("LAST_POST_ID", string(post.ID))
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
