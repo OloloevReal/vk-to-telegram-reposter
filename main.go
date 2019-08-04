@@ -17,7 +17,7 @@ func main() {
 	tgChannelId := os.Getenv("TG_CHANNEL_ID")
 	redisUrl := os.Getenv("REDISCLOUD_URL:")
 
-	opt, err := redis.ParseURL(redisUrl)
+	opt, err := redis.ParseURL(redisUrl + "/0")
 	if err != nil {
 		panic(err)
 	}
