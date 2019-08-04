@@ -15,9 +15,9 @@ func main() {
 	vkGroup := os.Getenv("VK_GROUP")
 	tgBotToken := os.Getenv("TG_BOT_TOKEN")
 	tgChannelId := os.Getenv("TG_CHANNEL_ID")
-	redisUrl := os.Getenv("REDISCLOUD_URL:")
+	redisUrl := os.Getenv("REDISCLOUD_URL")
 
-	opt, err := redis.ParseURL(redisUrl + "/0")
+	opt, err := redis.ParseURL(redisUrl)
 	if err != nil {
 		panic(err)
 	}
