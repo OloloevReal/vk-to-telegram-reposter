@@ -68,14 +68,14 @@ func main() {
 				if attachment.Type == "photo" {
 					text += getInvisibleLink(" ", attachment.Photo.Photo604) // пустой символ чтобы прикрепить картинку в markdown без текста
 				} else if attachment.Type == "video" {
-					videoUrl := "https://vk.com/video" + string(attachment.Video.OwnerID) + "_" + string(attachment.Video.ID)
+					videoUrl := "https://vk.com/video" + strconv.Itoa(attachment.Video.OwnerID) + "_" + strconv.Itoa(attachment.Video.ID)
 					text += getInvisibleLink("\nВидео", videoUrl)
 				}
 				break
 			}
 		}
 		msg := tgbotapi.NewMessageToChannel(tgChannelId, post.Text)
-		vkPostUrl := "https://vk.com/wall" + vkGroup + "-" + string(post.ID)
+		vkPostUrl := "https://vk.com/wall" + vkGroup + "-" + strconv.Itoa(post.ID)
 
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
@@ -86,7 +86,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		redisDb.Set("VK_LAST_POST_ID", string(post.ID), 0)
+		redisDb.Set("VK_LAST_POST_ID", strconv.Itoa(post.ID), 0)
 	}
 }
 
