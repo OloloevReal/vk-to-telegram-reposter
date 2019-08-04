@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/go-redis/redis"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/himidori/golang-vk-api"
@@ -22,7 +21,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	redis := redis.NewClient(opt)
+	redisDb := redis.NewClient(opt)
 
 	bot, err := tgbotapi.NewBotAPI(tgBotToken)
 	if err != nil {
@@ -45,7 +44,7 @@ func main() {
 		panic(err)
 	}
 
-	vkLastPostId, err := redis.Get("VK_LAST_POST_ID").Result()
+	vkLastPostId, err := redisDb.Get("VK_LAST_POST_ID").Result()
 	if err != nil {
 		panic(err)
 	}
@@ -87,10 +86,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		redis.Set("VK_LAST_POST_ID", string(post.ID), 0)
-		if err != nil {
-			panic(err)
-		}
+		redisDb.Set("VK_LAST_POST_ID", string(post.ID), 0)
 	}
 }
 
