@@ -79,7 +79,7 @@ func main() {
 			}
 		}
 		msg := tgbotapi.NewMessageToChannel(tgChannelId, post.Text)
-		vkPostUrl := "https://vk.com/wall" + vkGroup + "-" + strconv.Itoa(post.ID)
+		vkPostUrl := "https://vk.com/wall" + vkGroup + "_" + strconv.Itoa(post.ID)
 
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
