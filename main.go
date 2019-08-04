@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"github.com/go-redis/redis"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/himidori/golang-vk-api"
 	"log"
 	"net/url"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -13,6 +16,13 @@ func main() {
 	vkGroup := os.Getenv("VK_GROUP")
 	tgBotToken := os.Getenv("TG_BOT_TOKEN")
 	tgChannelId := os.Getenv("TG_CHANNEL_ID")
+	redisUrl := os.Getenv("REDISCLOUD_URL:")
+
+	opt, err := redis.ParseURL(redisUrl)
+	if err != nil {
+		panic(err)
+	}
+	redis := redis.NewClient(opt)
 
 	bot, err := tgbotapi.NewBotAPI(tgBotToken)
 	if err != nil {
@@ -29,14 +39,23 @@ func main() {
 	}
 
 	params := url.Values{}
-	wall, _ := client.WallGet(vkGroup, 10, params)
+	wall, _ := client.WallGet(vkGroup, 3, params)
 
 	if err != nil {
 		panic(err)
 	}
 
+	vkLastPostId, err := redis.Get("VK_LAST_POST_ID").Result()
+	if err != nil {
+		panic(err)
+	}
+	vkLastPostIdstr, err := strconv.Atoi(vkLastPostId)
+	if err != nil {
+		panic(err)
+	}
+
 	for _, post := range wall.Posts {
-		if post.IsPinned == 1 || post.MarkedAsAd == 1 {
+		if post.IsPinned == 1 || post.MarkedAsAd == 1 || post.ID <= vkLastPostIdstr {
 			continue
 		}
 
@@ -68,7 +87,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		err = os.Setenv("LAST_POST_ID", string(post.ID))
+		redis.Set("VK_LAST_POST_ID", string(post.ID), 0)
 		if err != nil {
 			panic(err)
 		}
