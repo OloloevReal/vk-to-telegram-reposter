@@ -37,9 +37,13 @@ func main() {
 		log.Println(err)
 	}
 
-	params := url.Values{}
-	wall, _ := client.WallGet(vkGroup, 3, params)
+	vkGroupId, err := strconv.Atoi(vkGroup)
+	if err != nil {
+		panic(err)
+	}
 
+	params := url.Values{}
+	wall, err := client.WallGet(vkGroupId, 3, params)
 	if err != nil {
 		panic(err)
 	}
