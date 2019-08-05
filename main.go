@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/go-redis/redis"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/himidori/golang-vk-api"
@@ -80,10 +81,17 @@ func main() {
 		}
 		msg := tgbotapi.NewMessageToChannel(tgChannelId, text)
 		vkPostUrl := "https://vk.com/wall" + vkGroup + "_" + strconv.Itoa(post.ID)
+		params := url.Values{}
+		params.Set("url", vkPostUrl)
+		params.Set("private", "1")
+
+		var shortLink *ShortLink
+		vkShortenedLink, _ := client.MakeRequest("utils.getShortLink", params)
+		json.Unmarshal(vkShortenedLink.Response, &shortLink)
 
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonURL("Пост", vkPostUrl)),
+				tgbotapi.NewInlineKeyboardButtonURL("Пост", shortLink.ShortUrl)),
 		)
 		msg.ParseMode = "Markdown"
 
@@ -97,4 +105,11 @@ func main() {
 
 func getInvisibleLink(text string, url string) string {
 	return "[" + text + "](" + url + ")"
+}
+
+type ShortLink struct {
+	ShortUrl  string `json:"short_url"`
+	AccessKey string `json:"access_key"`
+	Key       string `json:"key"`
+	Url       string `json:"url"`
 }
