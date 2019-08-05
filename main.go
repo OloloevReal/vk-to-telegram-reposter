@@ -83,7 +83,6 @@ func main() {
 		vkPostUrl := "https://vk.com/wall" + vkGroup + "_" + strconv.Itoa(post.ID)
 		params := url.Values{}
 		params.Set("url", vkPostUrl)
-		params.Set("private", "1")
 
 		var shortLink *ShortLink
 		vkShortenedLink, _ := client.MakeRequest("utils.getShortLink", params)
