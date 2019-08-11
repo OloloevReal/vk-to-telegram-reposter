@@ -86,7 +86,10 @@ func main() {
 
 		var shortLink *ShortLink
 		vkShortenedLink, _ := client.MakeRequest("utils.getShortLink", params)
-		json.Unmarshal(vkShortenedLink.Response, &shortLink)
+		err := json.Unmarshal(vkShortenedLink.Response, &shortLink)
+		if err != nil {
+			panic(err)
+		}
 
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
@@ -94,7 +97,7 @@ func main() {
 		)
 		msg.ParseMode = "Markdown"
 
-		_, err := bot.Send(msg)
+		_, err = bot.Send(msg)
 		if err != nil {
 			panic(err)
 		}
