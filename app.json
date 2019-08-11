@@ -1,0 +1,37 @@
+{
+  "name": "VK to Telegram reposter",
+  "description": "A Go app to repost from public page to telegram channel",
+  "repository": "https://github.com/qwitriy/vk-to-telegram-reposter",
+  "keywords": ["go", "vkontakte", "telegram"],
+  "env": {
+    "BUILDPACK_URL": "https://github.com/heroku/heroku-buildpack-go",
+    "HEROKU_APP_NAME": {
+      "description": "Please re-enter your App Name from the top.",
+      "required": true
+    },
+    "REDISCLOUD_URL": {
+      "required": true
+    },
+    "TG_BOT_TOKEN": {
+      "description": "Telegram bot token",
+      "required": true
+    },
+    "TG_CHANNEL_ID": {
+      "description": "Telegram channel id",
+      "required": true
+    },
+    "VK_GROUP": {
+      "description": "VKontakte group or public page ID",
+      "required": true
+    },
+    "VK_SERVICE_TOKEN": {
+      "description": "VKontakte service token",
+      "required": true
+    }
+  },
+  "addons": [
+    "scheduler",
+    "rediscloud",
+    "papertrail"
+  ]
+}
