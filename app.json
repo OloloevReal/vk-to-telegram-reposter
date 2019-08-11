@@ -9,9 +9,6 @@
       "description": "Please re-enter your App Name from the top.",
       "required": true
     },
-    "REDISCLOUD_URL": {
-      "required": true
-    },
     "TG_BOT_TOKEN": {
       "description": "Telegram bot token",
       "required": true
